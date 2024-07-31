@@ -1,6 +1,6 @@
 * gh-autolinks.el
 
-Automatically reformat buffers to recognize [[https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls][GitHub references]] and convert them to links.
+Automatically reformat [[https://orgmode.org][Org]] buffers to recognize [[https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls][GitHub references]] and convert them to links.
 
 ** Setup
 
@@ -10,6 +10,7 @@ Automatically reformat buffers to recognize [[https://docs.github.com/en/get-sta
     (before-save . gh-autolinks-org-buffer))
 #+end_src
 
+[[https://cli.github.com][GitHub CLI]] is required to fetch the titles of the pull requests and issues.
 
 ** Usage
 
