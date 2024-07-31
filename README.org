@@ -1,0 +1,29 @@
+* gh-autolinks.el
+
+Automatically reformat buffers to recognize [[https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls][GitHub references]] and convert them to links.
+
+** Setup
+
+#+begin_src emacs-lisp :tangle yes
+  (use-package gh-autolinks
+    :custom (gh-autolinks-add-title t)
+    (before-save . gh-autolinks-org-buffer))
+#+end_src
+
+
+** Usage
+
+Paste a GitHub URLs pointing to pull requests or issues in the buffer. Save the buffer and the references will be
+converted to links.
+
+For example:
+
+#+begin_src org-mode :tangle yes
+https://github.com/pulumi/pulumi-terraform-bridge/pull/2217][pulumi/pulumi-terraform-bridge#2217
+https://github.com/pulumi/pulumi-terraform-bridge/pull/2231][pulumi/pulumi-terraform-bridge#2231
+#+end_src
+
+Becomes:
+
+[[https://github.com/pulumi/pulumi-terraform-bridge/pull/2217][pulumi/pulumi-terraform-bridge#2217: PF test defaults and plan modifiers]]
+[[https://github.com/pulumi/pulumi-terraform-bridge/pull/2231][pulumi/pulumi-terraform-bridge#2231: Add more shim layer tests for pf]]
