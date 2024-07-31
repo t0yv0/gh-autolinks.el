@@ -19,11 +19,11 @@ converted to links.
 For example:
 
 #+begin_src org-mode :tangle yes
-https://github.com/pulumi/pulumi-terraform-bridge/pull/2217][pulumi/pulumi-terraform-bridge#2217
-https://github.com/pulumi/pulumi-terraform-bridge/pull/2231][pulumi/pulumi-terraform-bridge#2231
+https://github.com/pulumi/pulumi-terraform-bridge/pull/2217
+https://github.com/pulumi/pulumi-terraform-bridge/pull/2231
 #+end_src
 
 Becomes:
 
-[[https://github.com/pulumi/pulumi-terraform-bridge/pull/2217][pulumi/pulumi-terraform-bridge#2217: PF test defaults and plan modifiers]]
-[[https://github.com/pulumi/pulumi-terraform-bridge/pull/2231][pulumi/pulumi-terraform-bridge#2231: Add more shim layer tests for pf]]
+- [[https://github.com/pulumi/pulumi-terraform-bridge/pull/2217][pulumi/pulumi-terraform-bridge#2217: PF test defaults and plan modifiers]]
+- [[https://github.com/pulumi/pulumi-terraform-bridge/pull/2231][pulumi/pulumi-terraform-bridge#2231: Add more shim layer tests for pf]]
