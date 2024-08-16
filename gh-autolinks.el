@@ -17,6 +17,7 @@
   :group 'gh-autolinks)
 
 
+;;;###autoload
 (defun gh-autolinks-org-buffer ()
   "Detects GitHub references in the current org-mode buffer and
 automatically links them."
