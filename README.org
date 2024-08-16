@@ -7,7 +7,7 @@ Automatically reformat [[https://orgmode.org][Org]] buffers to recognize [[https
 #+begin_src emacs-lisp :tangle yes
   (use-package gh-autolinks
     :custom (gh-autolinks-add-title t)
-    (before-save . gh-autolinks-org-buffer))
+    :hook (before-save . gh-autolinks-org-buffer))
 #+end_src
 
 [[https://cli.github.com][GitHub CLI]] is required to fetch the titles of the pull requests and issues.
