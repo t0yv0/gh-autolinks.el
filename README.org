@@ -29,5 +29,4 @@ Becomes:
 - [[https://github.com/pulumi/pulumi-terraform-bridge/pull/2217][pulumi/pulumi-terraform-bridge#2217: PF test defaults and plan modifiers]]
 - [[https://github.com/pulumi/pulumi-terraform-bridge/pull/2231][pulumi/pulumi-terraform-bridge#2231: Add more shim layer tests for pf]]
 
-Alternatively, if ~gh-autolinks-use-overlays~ is set to ~t~ then
-[overlays](https://www.gnu.org/software/emacs/manual/html_node/elisp/Overlays.html) are used to display the title.
+Alternatively, if ~gh-autolinks-use-overlays~ is set to ~t~ then [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Overlays.html][Overlays]] are used to display the title.
