@@ -23,38 +23,53 @@
   :group 'gh-autolinks)
 
 
+(defun gh-autolinks--patterns ()
+  "Returns link patterns to search for.
+
+See https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls for more information."
+  (list
+   (rx (group (or line-start " "))
+       "https://github.com/"
+       (group (+ (not "/")))
+       "/"
+       (group (+ (not "/")))
+       (or "/issues/" "/pull/")
+       (group (+ num)))
+   (rx (group (or line-start " "))
+       (group (+ alnum))
+       "/"
+       (group (+ alnum))
+       "#"
+       (group (+ num)))))
+
+
 ;;;###autoload
 (defun gh-autolinks-org-buffer ()
   "Detects GitHub references in the current org-mode buffer and
 automatically links them."
   (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (while (re-search-forward (rx (group (or line-start " "))
-                                  (group "https://github.com/"
-                                         (group (+ (not "/"))) "/"
-                                         (group (+ (not "/")))
-                                         (or "/issues/" "/pull/")
-                                         (group (+ num))))
-                              nil t)
-      (let ((space (match-string 1))
-            (url (match-string 2))
-            (owner (match-string 3))
-            (repo (match-string 4))
-            (num (match-string 5)))
-        (cond
-         (gh-autolinks-use-overlays
-          (gh-autolinks--ensure-overlay
-           (match-beginning 2) ;; url
-           (match-end 5) ;; num
-           (lambda ()
-             (gh-autolinks--issue-or-pullreq-title url))))
-         (gh-autolinks-add-title
-          (replace-match (format "%s[[%s][%s/%s#%s: %s]]"
-                                 space url owner repo num
-                                 (gh-autolinks--issue-or-pullreq-title url))))
-         (t (replace-match (format "%s[[%s][%s/%s#%s]]"
-                                     space url owner repo num))))))))
+  (dolist (pattern (gh-autolinks--patterns))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward pattern nil t)
+        (let* ((space (match-string 1))
+               (owner (match-string 2))
+               (repo (match-string 3))
+               (num (match-string 4))
+               (url (format "https://github.com/%s/%s/issues/%s" owner repo num)))
+          (cond
+           (gh-autolinks-use-overlays
+            (gh-autolinks--ensure-overlay
+             (match-beginning 2) ;; owner
+             (match-end 4) ;; num
+             (lambda ()
+               (gh-autolinks--issue-or-pullreq-title url))))
+           (gh-autolinks-add-title
+            (replace-match (format "%s[[%s][%s/%s#%s: %s]]"
+                                   space url owner repo num
+                                   (gh-autolinks--issue-or-pullreq-title url))))
+           (t (replace-match (format "%s[[%s][%s/%s#%s]]"
+                                     space url owner repo num)))))))))
 
 
 (defun gh-autolinks--ensure-overlay (beg end fetch-text)
@@ -64,7 +79,8 @@ First checks if there are existing overlays, in which case it
 does nothing as it assumes the work has been done already.
 
 Otherwise it displays the result of FETCH-TEXT after the region."
-  (when (null (overlays-in beg end))
+  (when (seq-empty-p (seq-filter (lambda (o) (overlay-get o 'after-string))
+                                 (overlays-in beg end)))
     (let ((new-overlay nil))
       (setq new-overlay (make-overlay beg end))
       (overlay-put new-overlay 'evaporate t)
