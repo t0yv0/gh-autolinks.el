@@ -1,36 +1,32 @@
 {
   inputs = {
-    nixpkgs.url = github:NixOS/nixpkgs/nixos-24.05;
-    nixpkgs_darwin.url = github:NixOS/nixpkgs/nixpkgs-24.05-darwin;
+    nixpkgs.url = github:NixOS/nixpkgs/nixos-24.11;
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, nixpkgs_darwin }: let
+  outputs = { self, nixpkgs, flake-utils }: let
 
     version = self.rev or "dirty";
 
-    packages = nixpkgs: sys: emacs-flavor: let
-      pkgs = import nixpkgs { system = sys; };
-      epkgs = pkgs.emacsPackagesFor (emacs-flavor pkgs);
+    overlay = final: prev: {
+        gh-autolinks = final.callPackage ./package.nix {
+            inherit version;
+            epkgs = final.emacsPackagesFor final.emacs;
+        };
+    };
 
-      gh-autolinks = epkgs.elpaBuild {
-        pname = "gh-autolinks";
-        ename = "gh-autlinks";
-        version = version;
-        src = [ ./gh-autolinks.el ];
-        packageRequires = [];
-        meta = {};
-      };
+    # https://github.com/NixOS/nixpkgs/issues/395169
+    emacs-overlay = final: prev: {
+        emacs = prev.emacs.override { withNativeCompilation = false; };
+    };
 
+    out = system: let
+        pkgs = import nixpkgs { inherit system; overlays = [emacs-overlay]; };
     in {
-      default = gh-autolinks;
+        packages.default = (self.overlays.default pkgs pkgs).gh-autolinks;
     };
 
-  in {
-    packages = {
-      "x86_64-darwin" = packages nixpkgs_darwin "x86_64-darwin"  (pkgs: pkgs.emacs29-macport);
-      "aarch64-darwin" = packages nixpkgs_darwin "aarch64-darwin" (pkgs: pkgs.emacs29-macport);
-      "x86_64-linux" = packages nixpkgs "x86_64-linux" (pkgs: pkgs.emacs29);
-      "aarch64-linux" = packages nixpkgs "aarch64-linux" (pkgs: pkgs.emacs29);
+    in flake-utils.lib.eachDefaultSystem out // {
+        overlays.default = overlay;
     };
-  };
 }
